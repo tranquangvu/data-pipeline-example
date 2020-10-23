@@ -1,0 +1,85 @@
+version: "3"
+
+services:
+  zookeeper:
+    image: debezium/zookeeper:1.3
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - 2181:2181
+    networks:
+      sdcnet:
+        aliases:
+          - zookeeper
+  kafka:
+    image: debezium/kafka:1.3
+    hostname: kafka
+    container_name: kafka
+    ports:
+      - 9092:9092
+    depends_on:
+      - zookeeper
+    networks:
+      sdcnet:
+        aliases:
+          - kafka
+    environment:
+      ADVERTISED_HOST_NAME: kafka
+      ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      ZOOKEEPER_CONNECT: zookeeper:2181
+  sdc:
+    image: streamsets/datacollector:3.18.1
+    hostname: sdc
+    container_name: sdc
+    ports:
+      - 18630:18630
+    networks:
+      sdcnet:
+        aliases:
+          - sdc
+    volumes:
+      - ./sdc/data:/data
+      - ./sdc/opt/streamsets-datacollector-3.18.1/streamsets-libs:/opt/streamsets-datacollector-3.18.1/streamsets-libs
+      - ./sdc/opt/streamsets-datacollector-3.18.1/streamsets-libs-extras:/opt/streamsets-datacollector-3.18.1/streamsets-libs-extras
+      - ./sdc/etc/sdc/sdc-security.policy:/etc/sdc/sdc-security.policy
+  sourcedb:
+    image: debezium/postgres:12
+    hostname: sourcedb
+    container_name: sourcedb
+    ports:
+      - 5432:5432
+    networks:
+      sdcnet:
+        aliases:
+          - sourcedb
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    command: postgres -c "config_file=/etc/postgresql/postgresql.conf"
+    volumes:
+      - ./sourcedb:/var/lib/postgresql/data
+      - ./sourcedb-postgresql.conf:/etc/postgresql/postgresql.conf
+  dbzconnector:
+    image: debezium/connect:1.3
+    hostname: dbzconnector
+    container_name: dbzconnector
+    networks:
+      sdcnet:
+        aliases:
+          - dbzconnector
+    ports:
+      - 8083:8083
+    depends_on:
+      - zookeeper
+      - kafka
+      - sourcedb
+    environment:
+      GROUP_ID: 1
+      CONFIG_STORAGE_TOPIC: my_connect_configs
+      OFFSET_STORAGE_TOPIC: my_connect_offsets
+      STATUS_STORAGE_TOPIC: my_connect_statuses
+      ADVERTISED_HOST_NAME: dbzconnector
+      BOOTSTRAP_SERVERS: kafka:9092
+
+networks:
+  sdcnet:

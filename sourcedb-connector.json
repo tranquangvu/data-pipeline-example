@@ -1,0 +1,17 @@
+{
+  "name": "sourcedb-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+    "database.hostname": "sourcedb",
+    "database.port": "5432",
+    "database.user": "postgres",
+    "database.password": "password",
+    "database.dbname": "trackings",
+    "database.server.id": "184054",
+    "database.server.name": "dbserver1",
+    "database.whitelist": "trackings",
+    "database.history.kafka.bootstrap.servers": "kafka:9092",
+    "database.history.kafka.topic": "schema-changes.trackings"
+  }
+}
