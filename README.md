@@ -10,6 +10,13 @@ Modern data pipeline build with streamsets, kafka, spark, ...
 
 - Stop pipeline: `docker-compose down`
 
+### Source DB
+
+```
+  CREATE TABLE "public"."items" ("id" serial,"event_id" varchar,"device_id" varchar,"created" timestamp,"has_position" bool,"raw" json, PRIMARY KEY ("id"));
+  CREATE TABLE "public"."exported_items" ("id" serial,"event_id" varchar,"device_id" varchar,"created" bigint,"has_position" bool,"raw" json, PRIMARY KEY ("id"));
+```
+
 ### Debezium
 
 ```

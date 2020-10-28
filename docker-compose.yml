@@ -75,9 +75,9 @@ services:
       - sourcedb
     environment:
       GROUP_ID: 1
-      CONFIG_STORAGE_TOPIC: my_connect_configs
-      OFFSET_STORAGE_TOPIC: my_connect_offsets
-      STATUS_STORAGE_TOPIC: my_connect_statuses
+      CONFIG_STORAGE_TOPIC: dbzConnectConfigs
+      OFFSET_STORAGE_TOPIC: dbzConnectCffsets
+      STATUS_STORAGE_TOPIC: dbzConnectCtatuses
       ADVERTISED_HOST_NAME: dbzconnector
       BOOTSTRAP_SERVERS: kafka:9092
 
