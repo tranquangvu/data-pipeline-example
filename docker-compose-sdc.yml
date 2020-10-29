@@ -33,14 +33,14 @@ services:
       - sdcnet
       # - esnet
     volumes:
-      - ./sdc/data:/data
-      - ./sdc/opt/streamsets-datacollector-3.18.1/streamsets-libs:/opt/streamsets-datacollector-3.18.1/streamsets-libs
-      - ./sdc/opt/streamsets-datacollector-3.18.1/streamsets-libs-extras:/opt/streamsets-datacollector-3.18.1/streamsets-libs-extras
-      - ./sdc/etc/sdc/sdc-security.policy:/etc/sdc/sdc-security.policy
-  sourcedb:
+      - ./volumes/sdc/data:/data
+      - ./volumes/sdc/opt/streamsets-datacollector-3.18.1/streamsets-libs:/opt/streamsets-datacollector-3.18.1/streamsets-libs
+      - ./volumes/sdc/opt/streamsets-datacollector-3.18.1/streamsets-libs-extras:/opt/streamsets-datacollector-3.18.1/streamsets-libs-extras
+      - ./volumes/sdc/etc/sdc/sdc-security.policy:/etc/sdc/sdc-security.policy
+  pgdb:
     image: debezium/postgres:12
-    hostname: sourcedb
-    container_name: sourcedb
+    hostname: pgdb
+    container_name: pgdb
     ports:
       - 5432:5432
     networks:
@@ -50,8 +50,8 @@ services:
       POSTGRES_PASSWORD: password
     command: postgres -c "config_file=/etc/postgresql/postgresql.conf"
     volumes:
-      - ./sourcedb:/var/lib/postgresql/data
-      - ./sourcedb-postgresql.conf:/etc/postgresql/postgresql.conf
+      - ./volumes/pgdb:/var/lib/postgresql/data
+      - ./configs/postgresql.conf:/etc/postgresql/postgresql.conf
   dbzconnector:
     image: debezium/connect:1.3
     hostname: dbzconnector
@@ -63,7 +63,7 @@ services:
     depends_on:
       - zookeeper
       - kafka
-      - sourcedb
+      - pgdb
     environment:
       GROUP_ID: 1
       CONFIG_STORAGE_TOPIC: dbzConnectConfigs
@@ -75,5 +75,6 @@ services:
 networks:
   sdcnet:
     name: sdcnet
+    driver: bridge
   # esnet:
   #   external: true

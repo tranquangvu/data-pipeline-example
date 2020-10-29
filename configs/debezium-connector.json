@@ -1,9 +1,9 @@
 {
-  "name": "sourcedb-connector",
+  "name": "pgdb-connector",
   "config": {
     "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
     "tasks.max": "1",
-    "database.hostname": "sourcedb",
+    "database.hostname": "pgdb",
     "database.port": "5432",
     "database.user": "postgres",
     "database.password": "password",

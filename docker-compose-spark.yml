@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  spark:
+    image: jupyter/pyspark-notebook
+    hostname: spark
+    container_name: spark
+    networks:
+      - sparknet
+      - sdcnet
+      # - esnet
+    ports:
+      - 8888:8888
+      - 4040-4080:4040-4080
+    volumes:
+      - ./volumes/spark/work:/home/jovyan/work
+
+networks:
+  sparknet:
+    name: sparknet
+    driver: bridge
+  sdcnet:
+    external: true
+  # esnet:
+  #   external: true

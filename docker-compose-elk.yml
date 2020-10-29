@@ -19,7 +19,7 @@ services:
         soft: -1
         hard: -1
     volumes:
-      - ./elasticsearch:/usr/share/elasticsearch/data
+      - ./volumes/elasticsearch:/usr/share/elasticsearch/data
   kibana:
     image: docker.elastic.co/kibana/kibana:7.9.3
     hostname: kibana
