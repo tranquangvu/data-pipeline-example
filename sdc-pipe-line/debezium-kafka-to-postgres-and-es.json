@@ -5,7 +5,7 @@
     "pipelineId" : "DebeziumKc3a68f42-0241-4898-b336-7b1ce3d681fe",
     "title" : "Debezium Kafka To Postgres + Elastic Search",
     "description" : "",
-    "uuid" : "3bdf3a87-28b5-4b63-adae-c0e627b4ae80",
+    "uuid" : "b11e039d-8a0a-40ff-b485-ea89a86d3d9f",
     "configuration" : [ {
       "name" : "executionMode",
       "value" : "STANDALONE"
@@ -688,7 +688,7 @@
         "value" : "TO_ERROR"
       } ],
       "uiInfo" : {
-        "yPos" : 216.7795181274414,
+        "yPos" : 212.1722183227539,
         "stageType" : "SOURCE",
         "rawSource" : {
           "configuration" : [ {
@@ -711,7 +711,7 @@
         "icon" : "kafka.png",
         "description" : "",
         "label" : "Kafka Consumer",
-        "xPos" : 52.80071258544922,
+        "xPos" : 58.94378662109375,
         "displayMode" : "ADVANCED"
       },
       "inputLanes" : [ ],
@@ -836,7 +836,7 @@
         "value" : [ ]
       } ],
       "uiInfo" : {
-        "yPos" : 202.1798791633081,
+        "yPos" : 208.94051453928466,
         "stageType" : "PROCESSOR",
         "icon" : "expression.png",
         "description" : "",
@@ -984,12 +984,112 @@
         "value" : [ ]
       } ],
       "uiInfo" : {
-        "yPos" : 208.3098373413086,
+        "yPos" : 67.01895141601562,
         "stageType" : "TARGET",
         "icon" : "rdbms.png",
         "description" : "",
         "label" : "JDBC Postgres Producer",
-        "xPos" : 945.8242002349261,
+        "xPos" : 993.4330869536761,
+        "displayMode" : "ADVANCED"
+      },
+      "inputLanes" : [ "ExpressionEvaluator_01OutputLane16038541240800", "ExpressionEvaluator_02OutputLane16038541604880", "ExpressionEvaluator_03OutputLane16038542017240" ],
+      "outputLanes" : [ ],
+      "eventLanes" : [ ],
+      "services" : [ ]
+    }, {
+      "instanceName" : "Elasticsearch_01",
+      "library" : "streamsets-datacollector-elasticsearch_5-lib",
+      "stageName" : "com_streamsets_pipeline_stage_destination_elasticsearch_ElasticSearchDTarget",
+      "stageVersion" : "11",
+      "configuration" : [ {
+        "name" : "elasticSearchConfig.timeDriver",
+        "value" : "${time:now()}"
+      }, {
+        "name" : "elasticSearchConfig.timeZoneID",
+        "value" : "UTC"
+      }, {
+        "name" : "elasticSearchConfig.indexTemplate",
+        "value" : "trackings"
+      }, {
+        "name" : "elasticSearchConfig.typeTemplate",
+        "value" : "trackings"
+      }, {
+        "name" : "elasticSearchConfig.docIdTemplate",
+        "value" : "${record:value('/id')}"
+      }, {
+        "name" : "elasticSearchConfig.parentIdTemplate",
+        "value" : null
+      }, {
+        "name" : "elasticSearchConfig.routingTemplate",
+        "value" : null
+      }, {
+        "name" : "elasticSearchConfig.charset",
+        "value" : "UTF-8"
+      }, {
+        "name" : "elasticSearchConfig.defaultOperation",
+        "value" : "MERGE"
+      }, {
+        "name" : "elasticSearchConfig.unsupportedAction",
+        "value" : "SEND_TO_ERROR"
+      }, {
+        "name" : "elasticSearchConfig.rawAdditionalProperties",
+        "value" : "{\n}"
+      }, {
+        "name" : "elasticSearchConfig.securityConfig.securityMode",
+        "value" : "BASIC"
+      }, {
+        "name" : "elasticSearchConfig.securityConfig.awsRegion",
+        "value" : null
+      }, {
+        "name" : "elasticSearchConfig.securityConfig.endpoint",
+        "value" : null
+      }, {
+        "name" : "elasticSearchConfig.securityConfig.awsAccessKeyId",
+        "value" : null
+      }, {
+        "name" : "elasticSearchConfig.securityConfig.awsSecretAccessKey",
+        "value" : null
+      }, {
+        "name" : "elasticSearchConfig.securityConfig.securityUser",
+        "value" : null
+      }, {
+        "name" : "elasticSearchConfig.securityConfig.securityPassword",
+        "value" : null
+      }, {
+        "name" : "elasticSearchConfig.securityConfig.sslTrustStorePath",
+        "value" : null
+      }, {
+        "name" : "elasticSearchConfig.securityConfig.sslTrustStorePassword",
+        "value" : null
+      }, {
+        "name" : "elasticSearchConfig.httpUris",
+        "value" : [ "192.168.0.180:9200" ]
+      }, {
+        "name" : "elasticSearchConfig.params",
+        "value" : [ ]
+      }, {
+        "name" : "elasticSearchConfig.clientSniff",
+        "value" : false
+      }, {
+        "name" : "elasticSearchConfig.useSecurity",
+        "value" : false
+      }, {
+        "name" : "stageOnRecordError",
+        "value" : "TO_ERROR"
+      }, {
+        "name" : "stageRequiredFields",
+        "value" : [ ]
+      }, {
+        "name" : "stageRecordPreconditions",
+        "value" : [ ]
+      } ],
+      "uiInfo" : {
+        "yPos" : 289.5802001953125,
+        "stageType" : "TARGET",
+        "icon" : "elasticsearch.png",
+        "description" : "",
+        "label" : "Elasticsearch 1",
+        "xPos" : 1004.5683408599261,
         "displayMode" : "ADVANCED"
       },
       "inputLanes" : [ "ExpressionEvaluator_01OutputLane16038541240800", "ExpressionEvaluator_02OutputLane16038541604880", "ExpressionEvaluator_03OutputLane16038542017240" ],
@@ -1017,11 +1117,11 @@
       "title" : "Debezium Kafka To Postgres + Elastic Search",
       "description" : "",
       "created" : 1603851920779,
-      "lastModified" : 1603857353407,
+      "lastModified" : 1603941885645,
       "creator" : "admin",
       "lastModifier" : "admin",
       "lastRev" : "0",
-      "uuid" : "3bdf3a87-28b5-4b63-adae-c0e627b4ae80",
+      "uuid" : "b11e039d-8a0a-40ff-b485-ea89a86d3d9f",
       "valid" : true,
       "metadata" : {
         "labels" : [ ]
