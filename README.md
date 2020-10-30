@@ -28,7 +28,8 @@ Modern data pipeline example with:
 ### Create databases
 
 ```
-  psql -h localhost -p 5432 -U postgress -P password
+  docker exec -it pgdb /bin/bash
+  psql -h localhost -p 5432 -U postgres
 
   CREATE DATABASE trackings;
   CREATE DATABASE converted_trackings;
@@ -37,7 +38,7 @@ Modern data pipeline example with:
   CREATE TABLE "public"."items" ("id" serial,"event_id" varchar,"device_id" varchar,"created" timestamp,"has_position" bool,"raw" json, PRIMARY KEY ("id"));
 
   \c converted_trackings
-  CREATE TABLE "public"."exported_items" ("id" serial,"event_id" varchar,"device_id" varchar,"created" bigint,"has_position" bool,"temperature" float, PRIMARY KEY ("id"));
+  CREATE TABLE "public"."items" ("id" serial,"event_id" varchar,"device_id" varchar,"created" bigint,"has_position" bool,"temperature" float, PRIMARY KEY ("id"));
 ```
 
 ### Debezium connector
@@ -58,16 +59,19 @@ Modern data pipeline example with:
   ! pip install elasticsearch
 
   import psycopg2
+  import pprint
   from elasticsearch import Elasticsearch
 
-  pg = psycopg2.connect("postgres://postgres:password@sourcedb:5432/trackings")
-  es = Elasticsearch([{'host': '172.16.0.186', 'port': 9200}])
+  pg = psycopg2.connect("postgres://postgres:password@pgdb:5432/trackings")
+  es = Elasticsearch([{'host': HOST, 'port': PORT}])
 
   cursor = pg.cursor()
-  cursor.execute('SELECT device_id, count(*) FROM exported_items GROUP BY device_id')
+  cursor.execute('SELECT device_id, avg(temperature) FROM items GROUP BY device_id')
   rows = cursor.fetchall()
   pg.close()
 
+  pprint.pprint(rows)
+
   for row in rows:
-    es.index(index='tracking_counters', id=row[0], body={ 'device_id': row[0], 'count': row[1] })
+    es.index(index='tracking_avg_temperatures', id=row[0], body={ 'device_id': row[0], 'avg_temperature': row[1] })
 ```

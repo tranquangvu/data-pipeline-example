@@ -5,7 +5,7 @@
     "pipelineId" : "DebeziumKc3a68f42-0241-4898-b336-7b1ce3d681fe",
     "title" : "Debezium Kafka To Postgres + Elastic Search",
     "description" : "",
-    "uuid" : "b11e039d-8a0a-40ff-b485-ea89a86d3d9f",
+    "uuid" : "8e347fd9-7b31-4348-80a3-b0e8551d6635",
     "configuration" : [ {
       "name" : "executionMode",
       "value" : "STANDALONE"
@@ -688,7 +688,7 @@
         "value" : "TO_ERROR"
       } ],
       "uiInfo" : {
-        "yPos" : 212.1722183227539,
+        "yPos" : 213.9029769897461,
         "stageType" : "SOURCE",
         "rawSource" : {
           "configuration" : [ {
@@ -711,7 +711,7 @@
         "icon" : "kafka.png",
         "description" : "",
         "label" : "Kafka Consumer",
-        "xPos" : 58.94378662109375,
+        "xPos" : -110.65753507614136,
         "displayMode" : "ADVANCED"
       },
       "inputLanes" : [ ],
@@ -746,61 +746,16 @@
         "value" : [ ]
       } ],
       "uiInfo" : {
-        "yPos" : 210.3262176513672,
+        "yPos" : 216.7292938232422,
         "stageType" : "PROCESSOR",
         "icon" : "laneSelector.png",
         "description" : "",
         "label" : "CRUD Selector",
-        "xPos" : 301.2222595214844,
+        "xPos" : 139.5444793701172,
         "displayMode" : "BASIC"
       },
       "inputLanes" : [ "KafkaConsumer_01OutputLane16038519476970" ],
       "outputLanes" : [ "StreamSelector_01OutputLane1603853484237", "StreamSelector_01OutputLane1603853477176", "StreamSelector_01OutputLane1603852356346" ],
-      "eventLanes" : [ ],
-      "services" : [ ]
-    }, {
-      "instanceName" : "ExpressionEvaluator_01",
-      "library" : "streamsets-datacollector-basic-lib",
-      "stageName" : "com_streamsets_pipeline_stage_processor_expression_ExpressionDProcessor",
-      "stageVersion" : "2",
-      "configuration" : [ {
-        "name" : "expressionProcessorConfigs",
-        "value" : [ {
-          "fieldToSet" : "/",
-          "expression" : "${record:value('/payload/after')}"
-        } ]
-      }, {
-        "name" : "headerAttributeConfigs",
-        "value" : [ {
-          "attributeToSet" : "sdc.operation.type",
-          "headerAttributeExpression" : "3"
-        } ]
-      }, {
-        "name" : "fieldAttributeConfigs",
-        "value" : [ {
-          "fieldToSet" : "/"
-        } ]
-      }, {
-        "name" : "stageOnRecordError",
-        "value" : "TO_ERROR"
-      }, {
-        "name" : "stageRequiredFields",
-        "value" : [ ]
-      }, {
-        "name" : "stageRecordPreconditions",
-        "value" : [ ]
-      } ],
-      "uiInfo" : {
-        "yPos" : 81.23102569580078,
-        "stageType" : "PROCESSOR",
-        "icon" : "expression.png",
-        "description" : "",
-        "label" : "Update",
-        "xPos" : 575.4656066894531,
-        "displayMode" : "BASIC"
-      },
-      "inputLanes" : [ "StreamSelector_01OutputLane1603853484237" ],
-      "outputLanes" : [ "ExpressionEvaluator_01OutputLane16038541240800" ],
       "eventLanes" : [ ],
       "services" : [ ]
     }, {
@@ -811,8 +766,8 @@
       "configuration" : [ {
         "name" : "expressionProcessorConfigs",
         "value" : [ {
-          "fieldToSet" : "/",
-          "expression" : "${record:value('/payload/before')}"
+          "fieldToSet" : "/id",
+          "expression" : "${record:value('/payload/before/id')}"
         } ]
       }, {
         "name" : "headerAttributeConfigs",
@@ -836,16 +791,218 @@
         "value" : [ ]
       } ],
       "uiInfo" : {
-        "yPos" : 208.94051453928466,
+        "yPos" : 216.94051453928466,
         "stageType" : "PROCESSOR",
         "icon" : "expression.png",
         "description" : "",
         "label" : "Delete",
-        "xPos" : 576.9523130278949,
+        "xPos" : 578.9523130278949,
         "displayMode" : "BASIC"
       },
       "inputLanes" : [ "StreamSelector_01OutputLane1603853477176" ],
       "outputLanes" : [ "ExpressionEvaluator_02OutputLane16038541604880" ],
+      "eventLanes" : [ ],
+      "services" : [ ]
+    }, {
+      "instanceName" : "FieldRemover_02",
+      "library" : "streamsets-datacollector-basic-lib",
+      "stageName" : "com_streamsets_pipeline_stage_processor_fieldfilter_FieldFilterDProcessor",
+      "stageVersion" : "1",
+      "configuration" : [ {
+        "name" : "filterOperation",
+        "value" : "REMOVE"
+      }, {
+        "name" : "fields",
+        "value" : [ "/payload", "/schema" ]
+      }, {
+        "name" : "constant",
+        "value" : null
+      }, {
+        "name" : "stageRequiredFields",
+        "value" : [ ]
+      }, {
+        "name" : "stageRecordPreconditions",
+        "value" : [ ]
+      } ],
+      "uiInfo" : {
+        "yPos" : 217.7201385498047,
+        "stageType" : "PROCESSOR",
+        "icon" : "filter.png",
+        "description" : "",
+        "label" : "Field Remover",
+        "xPos" : 799.1599546294574,
+        "displayMode" : "BASIC"
+      },
+      "inputLanes" : [ "ExpressionEvaluator_02OutputLane16038541604880" ],
+      "outputLanes" : [ "FieldRemover_02OutputLane16040336072930" ],
+      "eventLanes" : [ ],
+      "services" : [ ]
+    }, {
+      "instanceName" : "JSONParser_01",
+      "library" : "streamsets-datacollector-basic-lib",
+      "stageName" : "com_streamsets_pipeline_stage_processor_jsonparser_JsonParserDProcessor",
+      "stageVersion" : "1",
+      "configuration" : [ {
+        "name" : "fieldPathToParse",
+        "value" : "/payload/after/raw"
+      }, {
+        "name" : "removeCtrlChars",
+        "value" : false
+      }, {
+        "name" : "parsedFieldPath",
+        "value" : "/payload/after/raw"
+      }, {
+        "name" : "stageOnRecordError",
+        "value" : "TO_ERROR"
+      }, {
+        "name" : "stageRequiredFields",
+        "value" : [ ]
+      }, {
+        "name" : "stageRecordPreconditions",
+        "value" : [ ]
+      } ],
+      "uiInfo" : {
+        "yPos" : 40.43383026123047,
+        "stageType" : "PROCESSOR",
+        "icon" : "json.png",
+        "description" : "",
+        "label" : "Parse raw field",
+        "xPos" : 339.4601827483539,
+        "displayMode" : "BASIC"
+      },
+      "inputLanes" : [ "StreamSelector_01OutputLane1603853484237" ],
+      "outputLanes" : [ "JSONParser_01OutputLane16040299496740" ],
+      "eventLanes" : [ ],
+      "services" : [ ]
+    }, {
+      "instanceName" : "ExpressionEvaluator_01",
+      "library" : "streamsets-datacollector-basic-lib",
+      "stageName" : "com_streamsets_pipeline_stage_processor_expression_ExpressionDProcessor",
+      "stageVersion" : "2",
+      "configuration" : [ {
+        "name" : "expressionProcessorConfigs",
+        "value" : [ {
+          "fieldToSet" : "/id",
+          "expression" : "${record:value('/payload/after/id')}"
+        }, {
+          "fieldToSet" : "/event_id",
+          "expression" : "${record:value('/payload/after/event_id')}"
+        }, {
+          "fieldToSet" : "/device_id",
+          "expression" : "${record:value('/payload/after/device_id')}"
+        }, {
+          "fieldToSet" : "/created",
+          "expression" : "${record:value('/payload/after/created')}"
+        }, {
+          "fieldToSet" : "/has_position",
+          "expression" : "${record:value('/payload/after/has_position')}"
+        }, {
+          "fieldToSet" : "/temperature",
+          "expression" : "${record:value('/payload/after/raw/meta/temperature')}"
+        } ]
+      }, {
+        "name" : "headerAttributeConfigs",
+        "value" : [ {
+          "attributeToSet" : "sdc.operation.type",
+          "headerAttributeExpression" : "3"
+        } ]
+      }, {
+        "name" : "fieldAttributeConfigs",
+        "value" : [ {
+          "fieldToSet" : "/"
+        } ]
+      }, {
+        "name" : "stageOnRecordError",
+        "value" : "TO_ERROR"
+      }, {
+        "name" : "stageRequiredFields",
+        "value" : [ ]
+      }, {
+        "name" : "stageRecordPreconditions",
+        "value" : [ ]
+      } ],
+      "uiInfo" : {
+        "yPos" : 40.55059814453125,
+        "stageType" : "PROCESSOR",
+        "icon" : "expression.png",
+        "description" : "",
+        "label" : "Update",
+        "xPos" : 580.2159729003906,
+        "displayMode" : "BASIC"
+      },
+      "inputLanes" : [ "JSONParser_01OutputLane16040299496740" ],
+      "outputLanes" : [ "ExpressionEvaluator_01OutputLane16038541240800" ],
+      "eventLanes" : [ ],
+      "services" : [ ]
+    }, {
+      "instanceName" : "FieldRemover_01",
+      "library" : "streamsets-datacollector-basic-lib",
+      "stageName" : "com_streamsets_pipeline_stage_processor_fieldfilter_FieldFilterDProcessor",
+      "stageVersion" : "1",
+      "configuration" : [ {
+        "name" : "filterOperation",
+        "value" : "REMOVE"
+      }, {
+        "name" : "fields",
+        "value" : [ "/payload", "/schema" ]
+      }, {
+        "name" : "constant",
+        "value" : null
+      }, {
+        "name" : "stageRequiredFields",
+        "value" : [ ]
+      }, {
+        "name" : "stageRecordPreconditions",
+        "value" : [ ]
+      } ],
+      "uiInfo" : {
+        "yPos" : 39.57073974609375,
+        "stageType" : "PROCESSOR",
+        "icon" : "filter.png",
+        "description" : "",
+        "label" : "Field Remover",
+        "xPos" : 801.6241269927386,
+        "displayMode" : "BASIC"
+      },
+      "inputLanes" : [ "ExpressionEvaluator_01OutputLane16038541240800" ],
+      "outputLanes" : [ "FieldRemover_01OutputLane16040335236740" ],
+      "eventLanes" : [ ],
+      "services" : [ ]
+    }, {
+      "instanceName" : "JSONParser_02",
+      "library" : "streamsets-datacollector-basic-lib",
+      "stageName" : "com_streamsets_pipeline_stage_processor_jsonparser_JsonParserDProcessor",
+      "stageVersion" : "1",
+      "configuration" : [ {
+        "name" : "fieldPathToParse",
+        "value" : "/payload/after/raw"
+      }, {
+        "name" : "removeCtrlChars",
+        "value" : false
+      }, {
+        "name" : "parsedFieldPath",
+        "value" : "/payload/after/raw"
+      }, {
+        "name" : "stageOnRecordError",
+        "value" : "TO_ERROR"
+      }, {
+        "name" : "stageRequiredFields",
+        "value" : [ ]
+      }, {
+        "name" : "stageRecordPreconditions",
+        "value" : [ ]
+      } ],
+      "uiInfo" : {
+        "yPos" : 360.57633209228516,
+        "stageType" : "PROCESSOR",
+        "icon" : "json.png",
+        "description" : "",
+        "label" : "JSON Parser 1",
+        "xPos" : 339.5891538482074,
+        "displayMode" : "BASIC"
+      },
+      "inputLanes" : [ "StreamSelector_01OutputLane1603852356346" ],
+      "outputLanes" : [ "JSONParser_02OutputLane16040347528530" ],
       "eventLanes" : [ ],
       "services" : [ ]
     }, {
@@ -856,8 +1013,23 @@
       "configuration" : [ {
         "name" : "expressionProcessorConfigs",
         "value" : [ {
-          "fieldToSet" : "/",
-          "expression" : "${record:value('/payload/after')}"
+          "fieldToSet" : "/id",
+          "expression" : "${record:value('/payload/after/id')}"
+        }, {
+          "fieldToSet" : "/event_id",
+          "expression" : "${record:value('/payload/after/event_id')}"
+        }, {
+          "fieldToSet" : "/device_id",
+          "expression" : "${record:value('/payload/after/device_id')}"
+        }, {
+          "fieldToSet" : "/created",
+          "expression" : "${record:value('/payload/after/created')}"
+        }, {
+          "fieldToSet" : "/has_position",
+          "expression" : "${record:value('/payload/after/has_position')}"
+        }, {
+          "fieldToSet" : "/temperature",
+          "expression" : "${record:value('/payload/after/raw/meta/temperature')}"
         } ]
       }, {
         "name" : "headerAttributeConfigs",
@@ -881,7 +1053,7 @@
         "value" : [ ]
       } ],
       "uiInfo" : {
-        "yPos" : 349.16039276123047,
+        "yPos" : 361.1254196166992,
         "stageType" : "PROCESSOR",
         "icon" : "expression.png",
         "description" : "",
@@ -889,8 +1061,42 @@
         "xPos" : 578.3350644927386,
         "displayMode" : "BASIC"
       },
-      "inputLanes" : [ "StreamSelector_01OutputLane1603852356346" ],
+      "inputLanes" : [ "JSONParser_02OutputLane16040347528530" ],
       "outputLanes" : [ "ExpressionEvaluator_03OutputLane16038542017240" ],
+      "eventLanes" : [ ],
+      "services" : [ ]
+    }, {
+      "instanceName" : "FieldRemover_03",
+      "library" : "streamsets-datacollector-basic-lib",
+      "stageName" : "com_streamsets_pipeline_stage_processor_fieldfilter_FieldFilterDProcessor",
+      "stageVersion" : "1",
+      "configuration" : [ {
+        "name" : "filterOperation",
+        "value" : "REMOVE"
+      }, {
+        "name" : "fields",
+        "value" : [ "/payload", "/schema" ]
+      }, {
+        "name" : "constant",
+        "value" : null
+      }, {
+        "name" : "stageRequiredFields",
+        "value" : [ ]
+      }, {
+        "name" : "stageRecordPreconditions",
+        "value" : [ ]
+      } ],
+      "uiInfo" : {
+        "yPos" : 361.4402313232422,
+        "stageType" : "PROCESSOR",
+        "icon" : "filter.png",
+        "description" : "",
+        "label" : "Field Remover",
+        "xPos" : 797.6241880278949,
+        "displayMode" : "BASIC"
+      },
+      "inputLanes" : [ "ExpressionEvaluator_03OutputLane16038542017240" ],
+      "outputLanes" : [ "FieldRemover_03OutputLane16040336588070" ],
       "eventLanes" : [ ],
       "services" : [ ]
     }, {
@@ -903,7 +1109,7 @@
         "value" : "public"
       }, {
         "name" : "tableNameTemplate",
-        "value" : "exported_items"
+        "value" : "items"
       }, {
         "name" : "columnNames",
         "value" : [ ]
@@ -930,7 +1136,7 @@
         "value" : false
       }, {
         "name" : "hikariConfigBean.connectionString",
-        "value" : "jdbc:postgresql://sourcedb:5432/trackings"
+        "value" : "jdbc:postgresql://pgdb:5432/converted_trackings"
       }, {
         "name" : "hikariConfigBean.useCredentials",
         "value" : true
@@ -984,15 +1190,15 @@
         "value" : [ ]
       } ],
       "uiInfo" : {
-        "yPos" : 67.01895141601562,
+        "yPos" : 100.48475646972656,
         "stageType" : "TARGET",
         "icon" : "rdbms.png",
         "description" : "",
         "label" : "JDBC Postgres Producer",
-        "xPos" : 993.4330869536761,
+        "xPos" : 1160.5108457427386,
         "displayMode" : "ADVANCED"
       },
-      "inputLanes" : [ "ExpressionEvaluator_01OutputLane16038541240800", "ExpressionEvaluator_02OutputLane16038541604880", "ExpressionEvaluator_03OutputLane16038542017240" ],
+      "inputLanes" : [ "FieldRemover_01OutputLane16040335236740", "FieldRemover_02OutputLane16040336072930", "FieldRemover_03OutputLane16040336588070" ],
       "outputLanes" : [ ],
       "eventLanes" : [ ],
       "services" : [ ]
@@ -1012,7 +1218,7 @@
         "value" : "trackings"
       }, {
         "name" : "elasticSearchConfig.typeTemplate",
-        "value" : "trackings"
+        "value" : "trackingItem"
       }, {
         "name" : "elasticSearchConfig.docIdTemplate",
         "value" : "${record:value('/id')}"
@@ -1084,15 +1290,15 @@
         "value" : [ ]
       } ],
       "uiInfo" : {
-        "yPos" : 289.5802001953125,
+        "yPos" : 261.4721374511719,
         "stageType" : "TARGET",
         "icon" : "elasticsearch.png",
         "description" : "",
         "label" : "Elasticsearch 1",
-        "xPos" : 1004.5683408599261,
+        "xPos" : 1160.8958555083636,
         "displayMode" : "ADVANCED"
       },
-      "inputLanes" : [ "ExpressionEvaluator_01OutputLane16038541240800", "ExpressionEvaluator_02OutputLane16038541604880", "ExpressionEvaluator_03OutputLane16038542017240" ],
+      "inputLanes" : [ "FieldRemover_01OutputLane16040335236740", "FieldRemover_02OutputLane16040336072930", "FieldRemover_03OutputLane16040336588070" ],
       "outputLanes" : [ ],
       "eventLanes" : [ ],
       "services" : [ ]
@@ -1117,11 +1323,11 @@
       "title" : "Debezium Kafka To Postgres + Elastic Search",
       "description" : "",
       "created" : 1603851920779,
-      "lastModified" : 1603941885645,
+      "lastModified" : 1604034831796,
       "creator" : "admin",
       "lastModifier" : "admin",
       "lastRev" : "0",
-      "uuid" : "b11e039d-8a0a-40ff-b485-ea89a86d3d9f",
+      "uuid" : "8e347fd9-7b31-4348-80a3-b0e8551d6635",
       "valid" : true,
       "metadata" : {
         "labels" : [ ]
