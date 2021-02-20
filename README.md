@@ -1,4 +1,4 @@
-# VNNOR big data pipeline example
+# Data pipeline example
 
 Modern data pipeline example with:
   - Kafka
